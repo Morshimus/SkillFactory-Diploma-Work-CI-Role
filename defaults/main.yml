@@ -1,0 +1,3 @@
+---
+# defaults file for Jenkins
+Jenkins_Docker_root: /opt/morsh_ci

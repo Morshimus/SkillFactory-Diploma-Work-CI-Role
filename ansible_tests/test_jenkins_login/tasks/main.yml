@@ -1,0 +1,6 @@
+---
+# tasks file for test_artifactory_repository
+- name: Check link Jfrog Artifactory admin
+  shell: | 
+     curl -I http://localhost:8080/login --max-time 5 | grep 200
+  register: output_jenkins_login_result

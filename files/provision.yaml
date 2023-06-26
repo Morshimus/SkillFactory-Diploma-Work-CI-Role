@@ -1,0 +1,81 @@
+- hosts: localhost
+  gather_facts: yes
+  become: yes
+  tasks:
+   
+   - name: Install postgresql for Alpine Container.
+     apk:
+       name:
+         - postgresql
+         - sudo
+       state: latest
+
+
+   - name: Check that the PostgreSQL data root exist
+     stat:
+       path: /opt/pg_data/pg_wal
+     register: pg_data_result
+
+   - name: Postgresql data root dir creation
+     file:
+      path: /opt/pg_data
+      state: directory
+      owner: postgres
+      group: postgres
+      mode: '0750'
+
+   - name: Postgresql run dir creation
+     file:
+      path: /run/postgresql/
+      state: directory
+      owner: postgres
+      group: postgres
+      mode: '0750'
+
+
+
+   - name: Initialize postgresql db at new location
+     command: sudo -u postgres /usr/bin/initdb -D /opt/pg_data
+     when:
+      - not pg_data_result.stat.exists
+   
+
+   - name: Configure line for access local unix for django test pg db
+     lineinfile: dest=/opt/pg_data/pg_hba.conf regexp="^local   all             django                                  md5" line="local   all             django                                  md5" 
+
+
+   - name: Configure line for accessing local docker farm to django test pg db
+     lineinfile: dest=/opt/pg_data/pg_hba.conf regexp="^host    all             all             172.17.0.0/16           scram-sha-256" line="host    all             all             172.17.0.0/16           scram-sha-256" 
+
+
+   - name: Configure Postgresql listen address for docker containers
+     lineinfile: dest=/opt/pg_data/postgresql.conf regexp="^#listen_addresses = 'localhost'         \# what IP address(es) to listen on;" line="listen_addresses = '172.17.0.1'" 
+
+   - name: Check that the PostgreSQL runing or not
+     stat:
+       path: /run/postgresql/.s.PGSQL.5432
+     register: pg_run_result
+
+   - name: Start Postgresql
+     command: sudo -u postgres /usr/bin/pg_ctl start -D /opt/pg_data/ -s -w -t 15
+     when: 
+       - not pg_run_result.stat.exists
+
+   - name: Restart Postgresql
+     command: sudo -u postgres /usr/bin/pg_ctl restart -D /opt/pg_data/ -s -w -t 15
+     when: 
+       - pg_run_result.stat.exists
+
+   - name: Prepare db for django test
+     shell: |
+          PGPASSWORD=test123 psql -U django -d django_test -c "SELECT COUNT(*) FROM pg_stat_activity;"
+          if [ $? -eq 0 ]; then
+             echo "django_test connected"
+          else
+            sudo -u postgres psql -c "CREATE DATABASE django_test;" && \
+            sudo -u postgres psql -c "CREATE USER django WITH PASSWORD 'test123';" && \
+            sudo -u postgres psql -c "grant pg_read_all_data to django;"
+          fi
+     args:
+       executable: /bin/bash
+    
