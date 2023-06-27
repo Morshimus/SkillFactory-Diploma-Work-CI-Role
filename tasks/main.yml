@@ -29,7 +29,7 @@
   shell: |
       cd "{{ Jenkins_Docker_root }}" && \
       curl -L -o home.tar.gz.gpg \ 
-      "https://github.com/Morshimus/SkillFactory-Diploma-Work-CI-Role/releases/download/1.0.0/home.tar.gz.gpg" &&
+      "https://github.com/Morshimus/SkillFactory-Diploma-Work-CI-Role/releases/download/1.1.1/home.tar.gz.gpg" &&
       gpg --pinentry-mode loopback --passphrase "{{ jenkins_archive_password }}" -d home.tar.gz.gpg | tar -xvzf -
   args:
     executable: /bin/bash
