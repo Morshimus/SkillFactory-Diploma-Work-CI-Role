@@ -23,8 +23,8 @@ x-agent-2-volumes: &Agent_2_Volumes
   - jenkins_agent_2_store:/var:rw
 x-agent-1-cpu: &Agent_1_CPU "${DOCKER_agent_1_CPUS:-1}"
 x-agent-1-mem: &Agent_1_MEM "${DOCKER_agent_1_MEMORY:-512MB}"
-x-agent-2-cpu: &Agent_2_CPU "${DOCKER_agent_2_CPUS:-1}"
-x-agent-2-mem: &Agent_2_MEM "${DOCKER_agent_2_MEMORY:-724MB}"
+x-agent-2-cpu: &Agent_2_CPU "${DOCKER_agent_2_CPUS:-2}"
+x-agent-2-mem: &Agent_2_MEM "${DOCKER_agent_2_MEMORY:-1536MB}"
 x-agent-1-env: &Agent_1_ENV
   - JENKINS_SECRET_FILE=/run/secrets/agent-1-secret
   - JENKINS_URL=http://master:8080
