@@ -29,7 +29,7 @@
   shell: |
       cd "{{ Jenkins_Docker_root }}" && \
       curl -L -o home.tar.gz.gpg \ 
-      "https://github.com/Morshimus/SkillFactory-B11-Project-CI-Role-CI-Jenkins-Cluster/releases/download/1.1.0/home.tar.gz.gpg" &&
+      "https://github.com/Morshimus/SkillFactory-Diploma-Work-CI-Role/releases/download/1.0.0/home.tar.gz.gpg" &&
       gpg --pinentry-mode loopback --passphrase "{{ jenkins_archive_password }}" -d home.tar.gz.gpg | tar -xvzf -
   args:
     executable: /bin/bash
@@ -59,17 +59,7 @@
     src: provision.yaml
     dest: "{{ Jenkins_Docker_root }}/agents_share"
     
-- name: Copy static file django.conf to jenkins agents share
-  copy:
-    src: django.conf
-    dest: "{{ Jenkins_Docker_root }}/agents_share"
-
-- name: Copy static file requirements.yml to jenkins agents share
-  copy:
-    src: requirements.yml
-    dest: "{{ Jenkins_Docker_root }}/agents_share"
-    
-  
+      
 - name: Configure service for Jenkins docker-compose
   template:
     src: jenkins-cluster.service.j2
