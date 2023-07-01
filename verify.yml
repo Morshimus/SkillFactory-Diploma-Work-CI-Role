@@ -14,7 +14,7 @@
        
   tasks:
 
-  - name: check artifactory port result 
+  - name: check Jenkins port result 
     assert:
         that:
            - "{{ output_port.failed }} == false"    

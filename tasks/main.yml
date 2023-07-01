@@ -66,6 +66,7 @@
     dest: /etc/systemd/system/jenkins-cluster.service
     backup: yes
     mode: '0600'
+  notify: daemon-reload
 
 - name: Start Jenkins service
   service:

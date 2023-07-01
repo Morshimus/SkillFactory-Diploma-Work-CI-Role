@@ -1,2 +1,7 @@
 ---
-# handlers file for Jenkins
+- name: reload systemd configuration
+  listen: daemon-reload
+  systemd:
+    daemon_reload: true
+  when: molecule_yml is not defined
+
