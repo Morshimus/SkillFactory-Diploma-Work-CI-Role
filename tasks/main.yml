@@ -29,10 +29,15 @@
   shell: |
       cd "{{ Jenkins_Docker_root }}" && \
       curl -L -o home.tar.gz.gpg \ 
-      "https://github.com/Morshimus/SkillFactory-Diploma-Work-CI-Role/releases/download/1.1.2/home.tar.gz.gpg" &&
+      "https://github.com/Morshimus/SkillFactory-Diploma-Work-CI-Role/releases/download/1.2.0/home.tar.gz.gpg" &&
       gpg --pinentry-mode loopback --passphrase "{{ jenkins_archive_password }}" -d home.tar.gz.gpg | tar -xvzf -
   args:
     executable: /bin/bash
+
+- name: Check that the Jenkins-Cluster service file exist
+  stat:
+    path: "/etc/systemd/system/jenkins-cluster.service"
+  register: jenkins_service_result
 
 - name: Configure secrets for Jenkins agent 1
   template:

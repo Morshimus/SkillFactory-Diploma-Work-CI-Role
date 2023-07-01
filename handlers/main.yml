@@ -5,3 +5,13 @@
     daemon_reload: true
   when: molecule_yml is not defined
 
+
+- name: Restart Jenkins Cluster service
+  listen: restart-jenkins
+  service:
+    name: jenkins-cluster
+    enabled: true
+    state: restarted
+  when: 
+    - jenkins_service_result.stat.exists
+    - molecule_yml is not defined
