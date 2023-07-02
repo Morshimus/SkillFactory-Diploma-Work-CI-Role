@@ -1,3 +1,4 @@
 ---
 # defaults file for Jenkins
 Jenkins_Docker_root: /opt/morsh_ci
+jenkins_package_version: "1.2.0"
