@@ -25,6 +25,11 @@
     state: directory
     mode: '0755'
 
+- name: Check that the Jenkins home directory already exist
+  stat:
+    path: "{{ Jenkins_Docker_root }}/home"
+  register: jenkins_home_result
+
 - name: Download Jenkins home archive and extract .
   shell: |
       cd "{{ Jenkins_Docker_root }}" && \
@@ -33,6 +38,7 @@
       gpg --pinentry-mode loopback --passphrase "{{ jenkins_archive_password }}" -d home.tar.gz.gpg | tar -xvzf -
   args:
     executable: /bin/bash
+  when: not jenkins_home_result.stat.exists
 
 - name: Check that the Jenkins-Cluster service file exist
   stat:
